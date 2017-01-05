@@ -19,6 +19,7 @@
 // SOFTWARE.
 
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -47,17 +48,17 @@ namespace S3Uploader
 
         public static void Main(string[] arguments)
         {
-            if (arguments == null || arguments.Length < 6)
+            if (arguments == null || arguments.Length < 5)
             {
                 Console.WriteLine("S3Uploader - visit: https://github.com/NyxChadwick/S3Uploader");
-                Console.WriteLine($"Usage: {arguments?.FirstOrDefault()} accessKey secretKey regionName bucket path...");
+                Console.WriteLine($"Usage: {Process.GetCurrentProcess().ProcessName} accessKey secretKey regionName bucket path...");
                 Environment.Exit((int)ExitCode.BadUsage);
             }
 
-            var accessKey = arguments[1];
-            var secretKey = arguments[2];
-            var regionName = arguments[3];
-            var bucket = arguments[4];
+            var accessKey = arguments[0];
+            var secretKey = arguments[1];
+            var regionName = arguments[2];
+            var bucket = arguments[3];
             
             var region = (RegionEndpoint)(typeof(RegionEndpoint)
                 .GetFields(BindingFlags.Public | BindingFlags.Static)
@@ -78,7 +79,7 @@ namespace S3Uploader
 
                 using (var client = new AmazonS3Client(credentials, region))
                 {
-                    foreach (var path in arguments.Skip(5))
+                    foreach (var path in arguments.Skip(4))
                     {
                         currentFile = path;
 
